@@ -1,0 +1,74 @@
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using System.Text;
+
+namespace Roar.DependencyInjection.Generators;
+
+[Generator]
+public class DependencyRegistrationGrpcGenerator : IIncrementalGenerator
+{
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
+        var classSymbols =
+            context.SyntaxProvider
+                .CreateSyntaxProvider(
+                    static (node, _) => node is ClassDeclarationSyntax,
+                    static (ctx, _) =>
+                    {
+                        var cls = (ClassDeclarationSyntax)ctx.Node;
+                        var symbol = ctx.SemanticModel.GetDeclaredSymbol(cls) as INamedTypeSymbol;
+                        return symbol;
+                    })
+                .Where(static s => s is not null && !s.IsAbstract);
+
+        var compilationAndSymbols =
+            context.CompilationProvider.Combine(classSymbols.Collect());
+
+        context.RegisterSourceOutput(
+            compilationAndSymbols,
+            (spc, source) =>
+            {
+                var (compilation, symbols) = source;
+
+                var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
+
+                var sb = new StringBuilder(@"using Microsoft.AspNetCore.Builder;
+
+namespace Roar.DependencyInjection.Generated;
+
+public static partial class RoarGeneratedModule
+{
+");
+
+                sb.AppendLine(@"    public static WebApplication MapRoarEndpoints(this WebApplication app)
+    {");
+
+                foreach (var symbol in symbols)
+                {
+                    if (symbol is null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var i in symbol.AllInterfaces)
+                    {
+                        if (SymbolEqualityComparer.Default.Equals(i, grpcServiceInterface))
+                        {
+                            sb.AppendLine($"       app.MapGrpcService<{symbol.ToDisplayString()}>();");
+                            break;
+                        }
+                    }
+
+                    sb.AppendLine(@"
+        return app;
+    }
+}");
+                }
+
+                spc.AddSource(
+                "RoarGeneratedModuleGrpc.g.cs",
+                SourceText.From(sb.ToString(), Encoding.UTF8));
+            });
+    }
+}

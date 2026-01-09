@@ -40,12 +40,11 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
                 var hostedServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IBackgroundWorker");
                 var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
 
-                var sb = new StringBuilder(@"using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+                var sb = new StringBuilder(@"using Microsoft.Extensions.DependencyInjection;
 
 namespace Roar.DependencyInjection.Generated;
 
-public static class RoarGeneratedModule
+public static partial class RoarGeneratedModule
 {
     public static IServiceCollection AddRoarServices(this IServiceCollection services)
     {
@@ -108,33 +107,8 @@ public static class RoarGeneratedModule
 
                 sb.AppendLine(@"
         return services;
-    }");
-
-                sb.AppendLine(@"
-    public static WebApplication MapRoarEndpoints(this WebApplication app)
-    {");
-
-                foreach (var symbol in symbols)
-                {
-                    if (symbol is null)
-                    {
-                        continue;
-                    }
-
-                    foreach (var i in symbol.AllInterfaces)
-                    {
-                        if (SymbolEqualityComparer.Default.Equals(i, transientInterface))
-                        {
-                            sb.AppendLine($"       app.MapGrpcService<{symbol.ToDisplayString()}>();");
-                            break;
-                        }
-                    }
-
-                    sb.AppendLine(@"
-        return app;
     }
 }");
-                }
 
                 spc.AddSource(
                 "RoarGeneratedModule.g.cs",

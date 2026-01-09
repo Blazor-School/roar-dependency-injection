@@ -1,8 +1,10 @@
-﻿namespace Roar.DependencyInjection.GeneratorTests;
+﻿using Roar.DependencyInjection.Generators;
 
-public class ScopedService_WithInterface_GenerateCorrectly
+namespace Roar.DependencyInjection.GeneratorTests;
+
+public class ServiceRegistrationGeneratorTest
 {
-    [Fact]
+    [Fact(DisplayName = "When there is no interface and scoped service, it should register without interface")]
     public async Task NotGeneric_GenerateExpectedOutput()
     {
         const string source = """
@@ -15,12 +17,11 @@ public class ScopedService_WithInterface_GenerateCorrectly
             }
             """;
         const string expectedGenerated = """
-            using Microsoft.AspNetCore.Builder;
             using Microsoft.Extensions.DependencyInjection;
 
             namespace Roar.DependencyInjection.Generated;
 
-            public static class RoarGeneratedModule
+            public static partial class RoarGeneratedModule
             {
                 public static IServiceCollection AddRoarServices(this IServiceCollection services)
                 {
@@ -28,16 +29,10 @@ public class ScopedService_WithInterface_GenerateCorrectly
 
                     return services;
                 }
-
-                public static WebApplication MapRoarEndpoints(this WebApplication app)
-                {
-
-                    return app;
-                }
             }
 
             """;
 
-        await GeneratorTestHelper.VerifyAsync(source, expectedGenerated);
+        await GeneratorTestHelper.VerifyAsync<DepedencyRegistrationGenerator>(source, expectedGenerated, "RoarGeneratedModule.g.cs");
     }
 }
