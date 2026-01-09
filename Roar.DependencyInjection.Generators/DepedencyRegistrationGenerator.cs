@@ -40,7 +40,8 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
                 var hostedServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IBackgroundWorker");
                 var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
 
-                var sb = new StringBuilder(@"using Microsoft.Extensions.DependencyInjection;
+                var sb = new StringBuilder(@"using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Roar.DependencyInjection.Generated;
 
@@ -61,52 +62,52 @@ public static class RoarGeneratedModule
                     {
                         if (SymbolEqualityComparer.Default.Equals(i, scopedInterface))
                         {
-                            sb.AppendLine($"       services.AddScoped<{symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddScoped<{symbol.ToDisplayString()}>();");
                             break;
                         }
 
                         if (i.OriginalDefinition.Equals(genericScopedInterface, SymbolEqualityComparer.Default))
                         {
                             var serviceType = i.TypeArguments[0];
-                            sb.AppendLine($"       services.AddScoped<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddScoped<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
                         }
 
                         if (SymbolEqualityComparer.Default.Equals(i, singletonInterface))
                         {
-                            sb.AppendLine($"       services.AddSingleton<{symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddSingleton<{symbol.ToDisplayString()}>();");
                             break;
                         }
 
                         if (i.OriginalDefinition.Equals(genericSingletonInterface, SymbolEqualityComparer.Default))
                         {
                             var serviceType = i.TypeArguments[0];
-                            sb.AppendLine($"       services.AddSingleton<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddSingleton<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
                         }
 
                         if (SymbolEqualityComparer.Default.Equals(i, transientInterface))
                         {
-                            sb.AppendLine($"       services.AddTransient<{symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddTransient<{symbol.ToDisplayString()}>();");
                             break;
                         }
 
                         if (i.OriginalDefinition.Equals(genericTransientInterface, SymbolEqualityComparer.Default))
                         {
                             var serviceType = i.TypeArguments[0];
-                            sb.AppendLine($"       services.AddTransient<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddTransient<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
                         }
 
                         //Should support background service
                         if (SymbolEqualityComparer.Default.Equals(i, hostedServiceInterface))
                         {
-                            sb.AppendLine($"       services.AddSingleton<{symbol.ToDisplayString()}>();");
-                            sb.AppendLine($"       services.AddHostedService<{symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddSingleton<{symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"        services.AddHostedService<{symbol.ToDisplayString()}>();");
                             break;
                         }
                     }
                 }
 
                 sb.AppendLine(@"
-       return services;
+        return services;
     }");
 
                 sb.AppendLine(@"
@@ -130,7 +131,7 @@ public static class RoarGeneratedModule
                     }
 
                     sb.AppendLine(@"
-       return app;
+        return app;
     }
 }");
                 }

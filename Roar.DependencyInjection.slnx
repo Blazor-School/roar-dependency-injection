@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="Roar.DependencyInjection.GeneratorTests/Roar.DependencyInjection.GeneratorTests.csproj" Id="f2678a1d-45e9-4f47-a0b3-21ff9aa4873a" />
+  </Folder>
   <Project Path="Roar.DependencyInjection.Abstractions/Roar.DependencyInjection.Abstractions.csproj" />
   <Project Path="Roar.DependencyInjection.Core/Roar.DependencyInjection.Core.csproj" Id="53e40aa4-53a2-4bac-99d1-f8838723dcc4" />
   <Project Path="Roar.DependencyInjection.Generators/Roar.DependencyInjection.Generators.csproj" Id="f2563f7a-8ef6-4bdb-bd0c-3002ce548155" />
