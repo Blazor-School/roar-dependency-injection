@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Authors>Blazor School</Authors>
+		<Company>Blazor Innovations</Company>
+		<PackageId>Roar.DependencyInjection</PackageId>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Description>Roar.DependencyInjection is a lightweight, convention-based dependency injection kernel for .NET. It provides automatic service registration, compile-time source generation, and design-time analysis to eliminate manual wiring. Use it to register services by role interfaces and leverage generated code for fast, AOT-safe startup. Perfect for class libraries, web apps, gRPC, and modular applications that want clean, maintainable composition without boilerplate.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Roar.DependencyInjection.Abstractions\Roar.DependencyInjection.Abstractions.csproj" />
+		<ProjectReference Include="..\Roar.DependencyInjection.Generators\Roar.DependencyInjection.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+</Project>
