@@ -16,11 +16,23 @@
 		<Title>Roar.DependencyInjection</Title>
 		<PackageTags>dependency-injection;di;convention;source-generator;roslyn;analyzer;.net</PackageTags>
 		<Copyright>Blazor Innovations</Copyright>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Roar.DependencyInjection.Abstractions\Roar.DependencyInjection.Abstractions.csproj" />
 		<ProjectReference Include="..\Roar.DependencyInjection.Generators\Roar.DependencyInjection.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	</ItemGroup>
 
 </Project>

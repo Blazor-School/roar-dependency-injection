@@ -59,12 +59,12 @@ public static partial class RoarGeneratedModule
                             break;
                         }
                     }
+                }
 
-                    sb.AppendLine(@"
+                sb.AppendLine(@"
         return app;
     }
 }");
-                }
 
                 spc.AddSource(
                 "RoarGeneratedModuleGrpc.g.cs",
