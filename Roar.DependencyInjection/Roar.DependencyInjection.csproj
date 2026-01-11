@@ -9,7 +9,7 @@
 		<PackageId>Roar.DependencyInjection</PackageId>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Description>Roar.DependencyInjection is a lightweight, convention-based dependency injection kernel for .NET. It provides automatic service registration, compile-time source generation, and design-time analysis to eliminate manual wiring. Use it to register services by role interfaces and leverage generated code for fast, AOT-safe startup. Perfect for class libraries, web apps, gRPC, and modular applications that want clean, maintainable composition without boilerplate.</Description>
+		<Description>Compile-time service registration for .NET.</Description>
 		<RepositoryUrl>https://github.com/Blazor-School/roar-dependency-injection</RepositoryUrl>
 		<VersionPrefix>1.0.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
@@ -20,18 +20,15 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\Roar.DependencyInjection.Generators\bin\$(Configuration)\netstandard2.0\Roar.DependencyInjection.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	</ItemGroup>
-
+	
 </Project>
