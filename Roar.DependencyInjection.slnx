@@ -1,8 +1,9 @@
 <Solution>
   <Folder Name="/tests/">
-    <Project Path="Roar.DependencyInjection.GeneratorTests/Roar.DependencyInjection.GeneratorTests.csproj" Id="f2678a1d-45e9-4f47-a0b3-21ff9aa4873a" />
+    <Project Path="GrpcServiceIntegrationTest/GrpcServiceIntegrationTest.csproj" Id="295e7b3f-787f-4819-bbfa-f680980ae9ea" />
+    <Project Path="Roar.DependencyInjection.Test/Roar.DependencyInjection.Test.csproj" Id="f2678a1d-45e9-4f47-a0b3-21ff9aa4873a" />
+    <Project Path="ServiceIntegrationTest/ServiceIntegrationTest.csproj" Id="b41293db-dade-4763-948b-087fd964a0c1" />
   </Folder>
-  <Project Path="Roar.DependencyInjection.Abstractions/Roar.DependencyInjection.Abstractions.csproj" />
-  <Project Path="Roar.DependencyInjection/Roar.DependencyInjection.csproj" Id="53e40aa4-53a2-4bac-99d1-f8838723dcc4" />
   <Project Path="Roar.DependencyInjection.Generators/Roar.DependencyInjection.Generators.csproj" Id="f2563f7a-8ef6-4bdb-bd0c-3002ce548155" />
+  <Project Path="Roar.DependencyInjection/Roar.DependencyInjection.csproj" Id="53e40aa4-53a2-4bac-99d1-f8838723dcc4" />
 </Solution>

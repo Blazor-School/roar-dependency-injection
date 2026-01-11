@@ -5,8 +5,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\RoarGenerated</CompilerGeneratedFilesOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,8 +23,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Roar.DependencyInjection.Abstractions\Roar.DependencyInjection.Abstractions.csproj" />
-		<ProjectReference Include="..\Roar.DependencyInjection.Generators\Roar.DependencyInjection.Generators.csproj" />
+	  <ProjectReference Include="..\Roar.DependencyInjection.Generators\Roar.DependencyInjection.Generators.csproj" />
+	  <ProjectReference Include="..\Roar.DependencyInjection\Roar.DependencyInjection.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,0 +1,6 @@
+@GrpcServiceIntegrationTest_HostAddress = http://localhost:5010
+
+GET {{GrpcServiceIntegrationTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

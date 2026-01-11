@@ -10,6 +10,13 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var rootNamespace = context.AnalyzerConfigOptionsProvider
+            .Select((options, _) =>
+            {
+                options.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? ns);
+                return ns ?? "Roar.DependencyInjection.Generated"; // Fallback if not found
+            });
+
         var classSymbols =
             context.SyntaxProvider
                 .CreateSyntaxProvider(
@@ -22,14 +29,15 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
                     })
                 .Where(static s => s is not null && !s.IsAbstract);
 
-        var compilationAndSymbols =
-            context.CompilationProvider.Combine(classSymbols.Collect());
+        var compilationAndSymbols = context.CompilationProvider
+            .Combine(classSymbols.Collect())
+            .Combine(rootNamespace);
 
         context.RegisterSourceOutput(
             compilationAndSymbols,
             (spc, source) =>
             {
-                var (compilation, symbols) = source;
+                var ((compilation, symbols), ns) = source;
 
                 var scopedInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IScopedService");
                 var genericScopedInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IScopedService`1");
@@ -40,14 +48,14 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
                 var hostedServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IBackgroundWorker");
                 var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
 
-                var sb = new StringBuilder(@"using Microsoft.Extensions.DependencyInjection;
+                var sb = new StringBuilder($@"using Microsoft.Extensions.DependencyInjection;
 
-namespace Roar.DependencyInjection.Generated;
+namespace {ns};
 
 public static partial class RoarGeneratedModule
-{
+{{
     public static IServiceCollection AddRoarServices(this IServiceCollection services)
-    {
+    {{
 ");
 
                 foreach (var symbol in symbols)

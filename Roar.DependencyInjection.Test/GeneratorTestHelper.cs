@@ -7,15 +7,17 @@ namespace Roar.DependencyInjection.GeneratorTests;
 
 public class GeneratorTestHelper
 {
-    public static Task VerifyAsync<T>(string source, string expectedGenerated, string generatedClassName) where T : IIncrementalGenerator, new()
-        => new CSharpSourceGeneratorTest<T, DefaultVerifier>
+    public static Task VerifyAsync<T>(string source, string expectedGenerated, string generatedClassName, string expectedNamespace) where T : IIncrementalGenerator, new()
+    {
+        var test = new CSharpSourceGeneratorTest<T, DefaultVerifier>
         {
             TestState =
             {
                 Sources = { source },
-                ReferenceAssemblies = new(targetFramework: "net10.0",
-                referenceAssemblyPackage: new PackageIdentity("Microsoft.NETCore.App.Ref", "10.0.0"),
-                referenceAssemblyPath: Path.Combine("ref", "net10.0")),
+                ReferenceAssemblies = new ReferenceAssemblies(
+                    targetFramework: "net10.0",
+                    referenceAssemblyPackage: new PackageIdentity("Microsoft.NETCore.App.Ref", "10.0.0"),
+                    referenceAssemblyPath: Path.Combine("ref", "net10.0")),
                 AdditionalReferences =
                 {
                     typeof(IScopedService).Assembly,
@@ -31,5 +33,15 @@ public class GeneratorTestHelper
                     (typeof(T), generatedClassName, expectedGenerated),
                 }
             }
-        }.RunAsync();
+        };
+
+        string config = $@"is_global = true
+build_property.RootNamespace = {expectedNamespace}";
+
+        // 2. Add it to the TestState's AnalyzerConfigFiles
+        // The filename must end in .globalconfig
+        test.TestState.AnalyzerConfigFiles.Add(("/.globalconfig", config));
+
+        return test.RunAsync();
+    }
 }

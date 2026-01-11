@@ -1,22 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-	  		<ImplicitUsings>enable</ImplicitUsings>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<LangVersion>Latest</LangVersion>
-		<IsRoslynComponent>true</IsRoslynComponent>	  <ImplicitUsings>enable</ImplicitUsings>
-	  <Nullable>enable</Nullable>
-	  <IncludeBuildOutput>false</IncludeBuildOutput>
-	  <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-	  <LangVersion>Latest</LangVersion>
-	  
-  </PropertyGroup>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		<IsRoslynAnalyzer>true</IsRoslynAnalyzer>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+	</ItemGroup>
 
 </Project>

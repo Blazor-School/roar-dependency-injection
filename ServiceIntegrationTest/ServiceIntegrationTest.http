@@ -1,0 +1,6 @@
+@ServiceIntegrationTest_HostAddress = http://localhost:5265
+
+GET {{ServiceIntegrationTest_HostAddress}}/weatherforecast/GetMessage
+Accept: application/json
+
+###
