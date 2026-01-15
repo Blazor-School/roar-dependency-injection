@@ -17,6 +17,7 @@
 		<PackageTags>dependency-injection;di;convention;source-generator;roslyn;analyzer;.net</PackageTags>
 		<Copyright>Blazor Innovations</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>Logo.png</PackageIcon>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -28,6 +29,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Logo.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	  <None Update="README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
