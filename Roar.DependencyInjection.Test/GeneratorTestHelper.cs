@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Roar.DependencyInjection.Abstractions;
 
-namespace Roar.DependencyInjection.GeneratorTests;
+namespace Roar.DependencyInjection.Test;
 
 public class GeneratorTestHelper
 {
