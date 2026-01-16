@@ -41,16 +41,22 @@ public class DependencyRegistrationGrpcGenerator : IIncrementalGenerator
 
                 var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
 
-                var sb = new StringBuilder($@"using Microsoft.AspNetCore.Builder;
+                var sb = new StringBuilder($$"""
+using Microsoft.AspNetCore.Builder;
 
-namespace {ns};
+namespace {{ns}};
 
-public static partial class RoarGeneratedModule
-{{
-");
-
-                sb.AppendLine(@"    public static WebApplication MapRoarEndpoints(this WebApplication app)
-    {");
+[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "1.0.0")]
+[global::System.Diagnostics.DebuggerNonUserCode]
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+[global::System.Runtime.CompilerServices.CompilerGenerated]
+public static class RoarGeneratedModuleGrpc
+{
+    public static WebApplication MapRoarEndpoints(this WebApplication app)
+    {
+    
+""");
 
                 foreach (var symbol in symbols)
                 {
@@ -63,20 +69,20 @@ public static partial class RoarGeneratedModule
                     {
                         if (SymbolEqualityComparer.Default.Equals(i, grpcServiceInterface))
                         {
-                            sb.AppendLine($"        app.MapGrpcService<{symbol.ToDisplayString()}>();");
+                            sb.AppendLine($"    app.MapGrpcService<{symbol.ToDisplayString()}>();");
                             break;
                         }
                     }
                 }
 
-                sb.AppendLine(@"
+                sb.AppendLine("""
+
         return app;
     }
-}");
+}
+""");
 
-                spc.AddSource(
-                "RoarGeneratedModuleGrpc.g.cs",
-                SourceText.From(sb.ToString(), Encoding.UTF8));
+                spc.AddSource("RoarGeneratedModuleGrpc.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             });
     }
 }

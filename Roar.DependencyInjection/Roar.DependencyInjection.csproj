@@ -11,13 +11,14 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Compile-time service registration for .NET.</Description>
 		<RepositoryUrl>https://github.com/Blazor-School/roar-dependency-injection</RepositoryUrl>
-		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionPrefix>1.0.1</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<Title>Roar.DependencyInjection</Title>
 		<PackageTags>dependency-injection;di;convention;source-generator;roslyn;analyzer;.net</PackageTags>
 		<Copyright>Blazor Innovations</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>Logo.png</PackageIcon>
+		<PackageReleaseNotes>- Add attribute for generrated classes.</PackageReleaseNotes>
 	</PropertyGroup>
 	
 	<ItemGroup>

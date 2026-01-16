@@ -48,15 +48,22 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
                 var hostedServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IBackgroundWorker");
                 var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
 
-                var sb = new StringBuilder($@"using Microsoft.Extensions.DependencyInjection;
+                var sb = new StringBuilder($$"""
+using Microsoft.Extensions.DependencyInjection;
 
-namespace {ns};
+namespace {{ns}};
 
-public static partial class RoarGeneratedModule
-{{
+[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "1.0.0")]
+[global::System.Diagnostics.DebuggerNonUserCode]
+[global::System.Diagnostics.DebuggerStepThrough]
+[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+[global::System.Runtime.CompilerServices.CompilerGenerated]
+public static class RoarGeneratedModule
+{
     public static IServiceCollection AddRoarServices(this IServiceCollection services)
-    {{
-");
+    {
+
+""");
 
                 foreach (var symbol in symbols)
                 {
@@ -113,14 +120,14 @@ public static partial class RoarGeneratedModule
                     }
                 }
 
-                sb.AppendLine(@"
+                sb.AppendLine($$"""
+
         return services;
     }
-}");
+}
+""");
 
-                spc.AddSource(
-                "RoarGeneratedModule.g.cs",
-                SourceText.From(sb.ToString(), Encoding.UTF8));
+                spc.AddSource("RoarGeneratedModule.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             });
     }
 }
