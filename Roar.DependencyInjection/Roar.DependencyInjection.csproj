@@ -18,7 +18,7 @@
 		<Copyright>Blazor Innovations</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>Logo.png</PackageIcon>
-		<PackageReleaseNotes>- Add attribute for generrated classes.</PackageReleaseNotes>
+		<PackageReleaseNotes>- Switch from interfaces to attributes.</PackageReleaseNotes>
 	</PropertyGroup>
 	
 	<ItemGroup>
