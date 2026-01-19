@@ -7,14 +7,15 @@ public class ServiceRegistrationGeneratorTest
     [Fact(DisplayName = "When there is no interface and scoped service, it should register without interface")]
     public async Task NotGeneric_GenerateExpectedOutput()
     {
-        string consumingNamespace = "ConsumingProject.GrpcServices";
+        string consumingNamespace = "ConsumingProject.Services";
 
         string source = $$"""
-using Roar.DependencyInjection.Abstractions;
+using Roar.DependencyInjection;
 
 namespace {{consumingNamespace}};
 
-public class MyScopedService : IScopedService
+[ScopedService]
+public class MyScopedService
 {
 }
 """;
@@ -23,7 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace {{consumingNamespace}};
 
-[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "1.0.0")]
+[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "2.0.0")]
 [global::System.Diagnostics.DebuggerNonUserCode]
 [global::System.Diagnostics.DebuggerStepThrough]
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

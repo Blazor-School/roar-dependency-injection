@@ -1,8 +1,9 @@
-﻿using Roar.DependencyInjection.Abstractions;
+﻿using Roar.DependencyInjection;
 
 namespace ServiceIntegrationTest.Services;
 
-public class TransientTestServive : ITransientService
+[TransientService]
+public class TransientTestServive
 {
     public string GetMessage() => "Hello from Transient Service";
 }

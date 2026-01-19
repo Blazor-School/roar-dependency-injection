@@ -1,19 +1,21 @@
 # Roar.DependencyInjection
 
-> Compile-time service registration for .NET.
+> **Compile-time dependency injection made simple.**
 
-Replaces large blocks of manual `AddScoped`, `AddSingleton`, `AddTransient`, `AddHostedService`, and `MapGrpcService` calls with architectural conventions and compile time generated wiring.
+Roar.DependencyInjection removes the need for repetitive service registration code by generating it at compile time. Instead of maintaining long lists of `AddScoped`, `AddSingleton`, `AddTransient`, `AddHostedService`, and `MapGrpcService` calls, you declare intent through attributes—and Roar wires everything automatically.
+
+No reflection. No runtime scanning. Just clean, deterministic, generated code.
 
 ---
 
 ## Features
 
-- Convention-based automatic registration  
+- Automatic convention-based service registration  
 - Compile-time source generation (AOT and trimming safe)  
-- Interface driven roles  
-- Deterministic service composition  
-- Zero reflection runtime wiring  
-- Web, gRPC, worker, and class library friendly  
+- Clear, attribute-driven service roles  
+- Deterministic and predictable wiring  
+- Zero-reflection runtime behavior  
+- Seamless integration with ASP.NET Core and gRPC  
 
 ---
 
@@ -29,73 +31,129 @@ dotnet add package Roar.DependencyInjection
 
 ### Mark services by role
 
+Simply annotate your classes with a lifetime attribute:
+
 ```csharp
 using Roar.DependencyInjection;
 
-public class OrderService : IScopedService
+[ScopedService]
+public class OrderService
 {
 }
 ```
 
-This will generate:
+Roar automatically generates:
 
 ```csharp
 builder.Services.AddScoped<OrderService>();
 ```
 
-Explicit interface mapping:
+---
+
+### Explicit interface mapping
+
+Want to register a service under a specific interface? Just declare it:
 
 ```csharp
-public class OrderService : IScopedService<IOrderService>
+[ScopedService]
+[AsService(typeof(IOrderService))]
+public class OrderService : IOrderService
 {
 }
 ```
 
-This will generate:
+Generated result:
 
 ```csharp
 builder.Services.AddScoped<IOrderService, OrderService>();
 ```
+
+---
+
+### Mapping to multiple interfaces
+
+Roar supports multiple service contracts out of the box:
+
+```csharp
+[ScopedService]
+[AsService(typeof(IFoo))]
+[AsService(typeof(IBar))]
+public class MyService : IFoo, IBar
+{
+}
+```
+
+Generated:
+
+```csharp
+builder.Services.AddScoped<IFoo, MyService>();
+builder.Services.AddScoped<IBar, MyService>();
+```
+
+All mappings are validated at compile time to ensure correctness.
+
 ---
 
 ### Register all services
+
+Once your services are annotated, a single call wires everything:
 
 ```csharp
 builder.Services.AddRoarServices();
 ```
 
+No more manual registrations.
+
 ---
 
 ## gRPC endpoints
 
+Expose gRPC services using the same simple approach:
+
 ```csharp
-public class OrderGrpcService : OrderServiceContract.OrderServiceContractBase, IGrpcService
+[GrpcService]
+public class OrderGrpcService : OrderServiceContract.OrderServiceContractBase
 {
 }
 ```
 
-This will generate:
+Roar generates:
 
 ```csharp
 app.MapGrpcService<OrderGrpcService>();
 ```
 
-### Register all services
+### Map all endpoints
+
 ```csharp
 app.MapRoarEndpoints();
 ```
 
+All discovered gRPC services are mapped automatically.
+
 ---
 
-## Lifetime roles
+## Service roles
 
-| Role interface | Lifetime
-|---------------|----------
-| `IScopedService` | Scoped 
-| `ISingletonService` | Singleton 
-| `ITransientService` | Transient 
-| `IBackgroundWorker` | Background 
-| `IGrpcService` | gRPC endpoint
+| Attribute | Purpose |
+|--------------------|--------------------------------|
+| `ScopedService` | Register as Scoped service |
+| `SingletonService` | Register as Singleton service |
+| `TransientService` | Register as Transient service |
+| `BackgroundWorker` | Register as hosted background service |
+| `GrpcService` | Register as gRPC endpoint |
+
+---
+
+## Why Roar?
+
+- Less boilerplate  
+- Fewer DI mistakes  
+- Cleaner Program.cs  
+- Compile-time validation  
+- Safe for AOT, trimming, and native compilation  
+
+Roar lets you focus on architecture instead of wiring.
 
 ---
 

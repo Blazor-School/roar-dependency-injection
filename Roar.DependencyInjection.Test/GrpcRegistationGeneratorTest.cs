@@ -10,11 +10,12 @@ public class GrpcRegistationGeneratorTest
         string consumingNamespace = "ConsumingProject.GrpcServices";
 
         string source = $$"""
-using Roar.DependencyInjection.Abstractions;
+using Roar.DependencyInjection;
 
 namespace {{consumingNamespace}};
 
-public class MyGrpcService : IGrpcService
+[GrpcService]
+public class MyGrpcService
 {
 }
 """;
@@ -24,7 +25,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace {{consumingNamespace}};
 
-[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "1.0.0")]
+[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "2.0.0")]
 [global::System.Diagnostics.DebuggerNonUserCode]
 [global::System.Diagnostics.DebuggerStepThrough]
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

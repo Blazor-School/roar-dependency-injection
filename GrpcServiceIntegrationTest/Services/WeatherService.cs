@@ -1,10 +1,11 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Roar.DependencyInjection.Abstractions;
+using Roar.DependencyInjection;
 
 namespace GrpcServiceIntegrationTest.Services;
 
-public class WeatherService : WeatherContract.WeatherContractBase, IGrpcService
+[GrpcService]
+public class WeatherService : WeatherContract.WeatherContractBase
 {
     public override async Task<GetWeatherReply> GetWeathersAsync(GetWeatherRequest request, ServerCallContext context)
     {

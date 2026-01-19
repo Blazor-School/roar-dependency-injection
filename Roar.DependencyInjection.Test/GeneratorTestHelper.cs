@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Roar.DependencyInjection.Abstractions;
 
 namespace Roar.DependencyInjection.Test;
 
@@ -20,7 +19,7 @@ public class GeneratorTestHelper
                     referenceAssemblyPath: Path.Combine("ref", "net10.0")),
                 AdditionalReferences =
                 {
-                    typeof(IScopedService).Assembly,
+                    typeof(ScopedServiceAttribute).Assembly,
                     typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection).Assembly,
                     typeof(Microsoft.AspNetCore.Builder.WebApplication).Assembly,
                     typeof(Microsoft.AspNetCore.Builder.GrpcEndpointRouteBuilderExtensions).Assembly,

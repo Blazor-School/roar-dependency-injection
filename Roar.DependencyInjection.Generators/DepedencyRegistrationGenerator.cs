@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roar.DependencyInjection.Generators.Models;
 using System.Text;
 
 namespace Roar.DependencyInjection.Generators;
@@ -39,21 +40,19 @@ public class DepedencyRegistrationGenerator : IIncrementalGenerator
             {
                 var ((compilation, symbols), ns) = source;
 
-                var scopedInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IScopedService");
-                var genericScopedInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IScopedService`1");
-                var singletonInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.ISingletonService");
-                var genericSingletonInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.ISingletonService`1");
-                var transientInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.ITransientService");
-                var genericTransientInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.ITransientService`1");
-                var hostedServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IBackgroundWorker");
-                var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
+                var scopedAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.ScopedServiceAttribute");
+                var singletonAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.SingletonServiceAttribute");
+                var transientAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.TransientServiceAttribute");
+                var backgroundWorkerAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.BackgroundWorkerAttribute");
+                var grpcServiceAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.GrpcServiceAttribute");
+                var asServiceAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.AsServiceAttribute");
 
-                var sb = new StringBuilder($$"""
+                var stringBuilder = new StringBuilder($$"""
 using Microsoft.Extensions.DependencyInjection;
 
 namespace {{ns}};
 
-[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "1.0.0")]
+[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "2.0.0")]
 [global::System.Diagnostics.DebuggerNonUserCode]
 [global::System.Diagnostics.DebuggerStepThrough]
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -72,62 +71,23 @@ public static class RoarGeneratedModule
                         continue;
                     }
 
-                    foreach (var i in symbol.AllInterfaces)
+                    var serviceDefinition = ServiceDefinition.GetDefinition(symbol, scopedAttribute!, singletonAttribute!, transientAttribute!, backgroundWorkerAttribute!, asServiceAttribute!, grpcServiceAttribute!, spc);
+                    string renderedRegisterCode = serviceDefinition.RenderRegister();
+
+                    if (!string.IsNullOrEmpty(renderedRegisterCode))
                     {
-                        if (SymbolEqualityComparer.Default.Equals(i, scopedInterface))
-                        {
-                            sb.AppendLine($"        services.AddScoped<{symbol.ToDisplayString()}>();");
-                            break;
-                        }
-
-                        if (i.OriginalDefinition.Equals(genericScopedInterface, SymbolEqualityComparer.Default))
-                        {
-                            var serviceType = i.TypeArguments[0];
-                            sb.AppendLine($"        services.AddScoped<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
-                        }
-
-                        if (SymbolEqualityComparer.Default.Equals(i, singletonInterface))
-                        {
-                            sb.AppendLine($"        services.AddSingleton<{symbol.ToDisplayString()}>();");
-                            break;
-                        }
-
-                        if (i.OriginalDefinition.Equals(genericSingletonInterface, SymbolEqualityComparer.Default))
-                        {
-                            var serviceType = i.TypeArguments[0];
-                            sb.AppendLine($"        services.AddSingleton<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
-                        }
-
-                        if (SymbolEqualityComparer.Default.Equals(i, transientInterface))
-                        {
-                            sb.AppendLine($"        services.AddTransient<{symbol.ToDisplayString()}>();");
-                            break;
-                        }
-
-                        if (i.OriginalDefinition.Equals(genericTransientInterface, SymbolEqualityComparer.Default))
-                        {
-                            var serviceType = i.TypeArguments[0];
-                            sb.AppendLine($"        services.AddTransient<{serviceType.ToDisplayString()}, {symbol.ToDisplayString()}>();");
-                        }
-
-                        //Should support background service
-                        if (SymbolEqualityComparer.Default.Equals(i, hostedServiceInterface))
-                        {
-                            sb.AppendLine($"        services.AddSingleton<{symbol.ToDisplayString()}>();");
-                            sb.AppendLine($"        services.AddHostedService<{symbol.ToDisplayString()}>();");
-                            break;
-                        }
+                        stringBuilder.AppendLine(renderedRegisterCode);
                     }
                 }
 
-                sb.AppendLine($$"""
+                stringBuilder.AppendLine($$"""
 
         return services;
     }
 }
 """);
 
-                spc.AddSource("RoarGeneratedModule.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+                spc.AddSource("RoarGeneratedModule.g.cs", SourceText.From(stringBuilder.ToString(), Encoding.UTF8));
             });
     }
 }

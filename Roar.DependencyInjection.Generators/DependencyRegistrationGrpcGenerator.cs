@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roar.DependencyInjection.Generators.Models;
 using System.Text;
 
 namespace Roar.DependencyInjection.Generators;
@@ -39,14 +40,19 @@ public class DependencyRegistrationGrpcGenerator : IIncrementalGenerator
             {
                 var ((compilation, symbols), ns) = source;
 
-                var grpcServiceInterface = compilation.GetTypeByMetadataName("Roar.DependencyInjection.Abstractions.IGrpcService");
+                var scopedAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.ScopedServiceAttribute");
+                var singletonAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.SingletonServiceAttribute");
+                var transientAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.TransientServiceAttribute");
+                var backgroundWorkerAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.BackgroundWorkerAttribute");
+                var grpcServiceAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.GrpcServiceAttribute");
+                var asServiceAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.AsServiceAttribute");
 
-                var sb = new StringBuilder($$"""
+                var stringBuilder = new StringBuilder($$"""
 using Microsoft.AspNetCore.Builder;
 
 namespace {{ns}};
 
-[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "1.0.0")]
+[global::System.CodeDom.Compiler.GeneratedCode("RoarEngine", "2.0.0")]
 [global::System.Diagnostics.DebuggerNonUserCode]
 [global::System.Diagnostics.DebuggerStepThrough]
 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -55,7 +61,7 @@ public static class RoarGeneratedModuleGrpc
 {
     public static WebApplication MapRoarEndpoints(this WebApplication app)
     {
-    
+
 """);
 
                 foreach (var symbol in symbols)
@@ -65,24 +71,23 @@ public static class RoarGeneratedModuleGrpc
                         continue;
                     }
 
-                    foreach (var i in symbol.AllInterfaces)
+                    var serviceDefinition = ServiceDefinition.GetDefinition(symbol, scopedAttribute!, singletonAttribute!, transientAttribute!, backgroundWorkerAttribute!, asServiceAttribute!, grpcServiceAttribute!, spc);
+                    string renderedRegisterCode = serviceDefinition.RenderGrpcMapping();
+
+                    if (!string.IsNullOrEmpty(renderedRegisterCode))
                     {
-                        if (SymbolEqualityComparer.Default.Equals(i, grpcServiceInterface))
-                        {
-                            sb.AppendLine($"    app.MapGrpcService<{symbol.ToDisplayString()}>();");
-                            break;
-                        }
+                        stringBuilder.AppendLine(renderedRegisterCode);
                     }
                 }
 
-                sb.AppendLine("""
+                stringBuilder.AppendLine("""
 
         return app;
     }
 }
 """);
 
-                spc.AddSource("RoarGeneratedModuleGrpc.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+                spc.AddSource("RoarGeneratedModuleGrpc.g.cs", SourceText.From(stringBuilder.ToString(), Encoding.UTF8));
             });
     }
 }
