@@ -39,6 +39,7 @@ public class DependencyRegistrationGrpcGenerator : IIncrementalGenerator
             (spc, source) =>
             {
                 var ((compilation, symbols), ns) = source;
+                bool shouldGenerate = false;
 
                 var scopedAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.ScopedServiceAttribute");
                 var singletonAttribute = compilation.GetTypeByMetadataName("Roar.DependencyInjection.SingletonServiceAttribute");
@@ -66,16 +67,12 @@ public static class RoarGeneratedModuleGrpc
 
                 foreach (var symbol in symbols)
                 {
-                    if (symbol is null)
-                    {
-                        continue;
-                    }
-
                     var serviceDefinition = ServiceDefinition.GetDefinition(symbol, scopedAttribute!, singletonAttribute!, transientAttribute!, backgroundWorkerAttribute!, asServiceAttribute!, grpcServiceAttribute!, spc);
                     string renderedRegisterCode = serviceDefinition.RenderGrpcMapping();
 
                     if (!string.IsNullOrEmpty(renderedRegisterCode))
                     {
+                        shouldGenerate = true;
                         stringBuilder.AppendLine(renderedRegisterCode);
                     }
                 }
@@ -87,7 +84,11 @@ public static class RoarGeneratedModuleGrpc
 }
 """);
 
-                spc.AddSource("RoarGeneratedModuleGrpc.g.cs", SourceText.From(stringBuilder.ToString(), Encoding.UTF8));
+                if (shouldGenerate)
+                {
+                    spc.AddSource("RoarGeneratedModuleGrpc.g.cs", SourceText.From(stringBuilder.ToString(), Encoding.UTF8));
+                }
             });
+
     }
 }
