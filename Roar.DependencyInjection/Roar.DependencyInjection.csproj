@@ -18,7 +18,7 @@
 		<Copyright>Blazor Innovations</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>Logo.png</PackageIcon>
-		<PackageReleaseNotes>- Removed unnecessary package reference to enable the library to use in Blazor WebAssembly Standalone projects.</PackageReleaseNotes>
+		<PackageReleaseNotes>- Removed unnecessary framework reference to enable the library to use in Blazor WebAssembly Standalone projects.</PackageReleaseNotes>
 	</PropertyGroup>
 	
 	<ItemGroup>
