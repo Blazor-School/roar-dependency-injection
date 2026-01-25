@@ -11,22 +11,18 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Compile-time service registration for .NET.</Description>
 		<RepositoryUrl>https://github.com/Blazor-School/roar-dependency-injection</RepositoryUrl>
-		<VersionPrefix>2.0.0</VersionPrefix>
+		<VersionPrefix>2.1.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<Title>Roar.DependencyInjection</Title>
 		<PackageTags>dependency-injection;di;convention;source-generator;roslyn;analyzer;.net</PackageTags>
 		<Copyright>Blazor Innovations</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageIcon>Logo.png</PackageIcon>
-		<PackageReleaseNotes>- Switch from interfaces to attributes.</PackageReleaseNotes>
+		<PackageReleaseNotes>- Removed unnecessary package reference to enable the library to use in Blazor WebAssembly Standalone projects.</PackageReleaseNotes>
 	</PropertyGroup>
 	
 	<ItemGroup>
 		<None Include="..\Roar.DependencyInjection.Generators\bin\$(Configuration)\netstandard2.0\Roar.DependencyInjection.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 	<ItemGroup>
